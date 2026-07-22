@@ -36,4 +36,16 @@ export class BasePage {
       });
     }
   }
+
+  async handleConsentModal() {
+    try {
+      // 尋找 GDPR Consent 彈窗的同意按鈕並點擊
+      const consentBtn = this.page.locator('.fc-consent-root .fc-button-label, button:has-text("Consent"), button:has-text("AGREE")');
+      if (await consentBtn.first().isVisible({ timeout: 3000 })) {
+        await consentBtn.first().click();
+      }
+    } catch {
+      // 若無彈窗則靜默跳過
+    }
+  }
 }

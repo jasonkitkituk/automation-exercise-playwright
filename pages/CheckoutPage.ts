@@ -2,7 +2,7 @@ import { Page, Locator, expect } from '@playwright/test';
 import { BasePage } from './BasePage';
 
 export class CheckoutPage extends BasePage {
-  readonly proceedToCheckoutBtn: Locator;
+  //readonly proceedToCheckoutBtn: Locator;
   readonly placeOrderBtn: Locator;
 
   // Payment
@@ -30,12 +30,21 @@ export class CheckoutPage extends BasePage {
     this.successMessage = page.locator('[data-qa="order-placed"]');
   }
 
-  async proceedToCheckout() {
-    await this.proceedToCheckoutBtn.click();
+// 使用精確的 text 或 class locator
+  private proceedToCheckoutBtn = this.page.locator('a.check_out, .check_out');
+
+// 1. 在 /view_cart 頁面使用的按鈕
+  async clickProceedToCheckout() {
+    const btn = this.page.locator('a.check_out', { hasText: 'Proceed To Checkout' });
+    await btn.waitFor({ state: 'visible', timeout: 10000 });
+    await btn.click({ force: true });
   }
 
-  async placeOrder() {
-    await this.placeOrderBtn.click();
+  // 2. 在 /checkout 頁面使用的按鈕
+  async clickPlaceOrder() {
+    const btn = this.page.locator('a[href="/payment"]');
+    await btn.waitFor({ state: 'visible', timeout: 10000 });
+    await btn.click({ force: true });
   }
 
   async fillPaymentAndConfirm(paymentInfo: Record<string, string>) {
@@ -50,4 +59,6 @@ export class CheckoutPage extends BasePage {
   async verifyOrderPlaced() {
     await expect(this.successMessage).toBeVisible();
   }
+
+  
 }

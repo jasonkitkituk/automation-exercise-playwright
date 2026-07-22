@@ -40,6 +40,10 @@ export class LoginPage extends BasePage {
     //await this.signupBtn.click();
     // 加上 { force: true } 穿透任何覆蓋在按鈕上的透明廣告或彈窗
     await this.signupBtn.click({ force: true });
+
+    // 關鍵：確保頁面成功進入詳細 Signup 頁面！
+    // 如果 Email 重複，這裡會直接報錯，阻止無效流程繼續
+    await this.page.waitForURL('**/signup', { timeout: 10000 });
   }
 
   async verifyLoginError() {

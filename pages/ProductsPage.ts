@@ -33,8 +33,9 @@ export class ProductsPage extends BasePage {
   }
 
   async searchProduct(keyword: string) {
+    await this.dismissConsentModal();
     await this.searchInput.fill(keyword);
-    await this.searchBtn.click();
+    await this.searchBtn.click({ force: true });
   }
 
   async verifySearchResults(keyword: string) {
@@ -53,14 +54,31 @@ export class ProductsPage extends BasePage {
   */
 
   async addFirstProductToCart() {
-    // 1. 確保第一個商品的 Add to cart 按鈕已可點擊並執行點擊
-    await this.addFirstProductBtn.scrollIntoViewIfNeeded();
-    await this.addFirstProductBtn.click({ force: true });
+    // 1. 找到第一個商品並移動滑鼠上去 (Trigger overlay)
+    const firstProduct = this.page.locator('.single-products').first();
+    await firstProduct.hover();
 
-    // 2. 等待 Modal 載入至 DOM（不需要判定 opacity/visible，避開 CSS 動畫影響）
-    await this.viewCartModalLink.waitFor({ state: 'attached', timeout: 15000 });
+    // 2. 點擊「Add to cart」按鈕
+    await firstProduct.locator('a.add-to-cart').first().click({ force: true });
 
-    // 3. 強制點擊 View Cart 進入購物車頁面
-    await this.viewCartModalLink.click({ force: true });
+    // 3. 關鍵：等待 #cartModal 出現且可見！
+    const cartModal = this.page.locator('#cartModal');
+    await expect(cartModal).toBeVisible({ timeout: 10000 });
+
+    // 4. 等待裡面的 View Cart 連結變為可點擊狀態再點擊
+    const viewCartLink = cartModal.locator('a[href="/view_cart"]');
+    await viewCartLink.waitFor({ state: 'visible' });
+    await viewCartLink.click();
   }
+
+  async dismissConsentModal() {
+  try {
+    const consentBtn = this.page.locator('.fc-consent-root button:has-text("Consent"), .fc-consent-root button:has-text("AGREE")');
+    if (await consentBtn.isVisible({ timeout: 2000 })) {
+      await consentBtn.click();
+    }
+  } catch {
+    // 沒跳彈窗就順暢通過
+  }
+}
 }
