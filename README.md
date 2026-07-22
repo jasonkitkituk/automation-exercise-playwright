@@ -33,7 +33,12 @@ Q3. Proceed to choose the framework and programming language you intend on using
 
 Q4. Build a basic framework from scratch and script the four journeys you have chosen previously.
    - Known Issues & Stability Considerations:
-     - Note on Test Execution: automationexercise.com frequently experiences high server latency and dynamic third-party ad overlays. To mitigate test flakiness, the framework utilizes domcontentloaded strategies, { force: true } click actions, and configured retry mechanisms in playwright.config.ts.
+     - frequently experiences high server latency and dynamic third-party ad overlays. To mitigate test flakiness, configured retry mechanisms in playwright.config.ts.
+   - Handling Third-Party Overlay & Consent Banners:
+      - These Pop-up and Overlays intercept pointer events, blocking normal element interactions and causing click timeouts in automated scripts.
+         - Force Click Execution (`{ force: true }`)
+         - Automated Banner Dismissal
+         - Scroll into View (scrollIntoViewIfNeeded())
 
 
 Other Issues:
