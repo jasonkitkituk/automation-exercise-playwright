@@ -15,7 +15,7 @@ export class HomePage extends BasePage {
     this.productsBtn = page.getByRole('link', { name: 'Products' });
     this.cartBtn = page.getByRole('link', { name: 'Cart' });
     //this.loggedInAsText = page.locator('header').getByText(/Logged in as/);
-    // 改用更精準的 DOM 結構定位 "Logged in as" 元素
+    //Use more precise DOM structure positioning for "Logged in as" elements.
     this.loggedInAsText = page.locator('li:has-text("Logged in as")');
     this.logoutBtn = page.locator('a[href="/logout"]');
     this.deleteAccountBtn = page.getByRole('link', { name: 'Delete Account' });
@@ -23,7 +23,7 @@ export class HomePage extends BasePage {
   }
 
   async clickSignupLogin() {
-    // 加上 { force: true } 繞過蓋在按鈕上面的透明廣告或彈窗
+    //Adding `{force: true }` bypasses transparent ads or pop-ups covering buttons.
     await this.signupLoginBtn.click({ force: true });
   }
 
@@ -41,7 +41,7 @@ export class HomePage extends BasePage {
 
   async verifyLoggedInAs(username: string) {
     //await expect(this.loggedInAsText).toContainText(username);
-    // 增加等待時間至 10 秒，確保頁面轉址與 DOM 渲染完成
+    //Add a waiting time 15 seconds to ensure page redirection and DOM rendering are complete.
     await expect(this.loggedInAsText).toContainText(username, { timeout: 15000 });
   }
 

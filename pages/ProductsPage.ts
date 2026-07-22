@@ -22,13 +22,13 @@ export class ProductsPage extends BasePage {
     this.viewCartBtn = page.getByRole('link', { name: 'View Cart' });
     
 
-    // 定位彈窗中的 "View Cart" 連結/按鈕
+    //Locate the "View Cart" link/button in the pop-up window.
     this.viewCartLink = page.locator('u:has-text("View Cart")');
 
-    // 鎖定一般商品卡片內的 "Add to cart" 按鈕（非 overlay）
+    //Lock the "Add to cart" button (not overlay) within the regular product card.
     this.addFirstProductBtn = page.locator('.productinfo .add-to-cart').first();
     
-    // 定位 Modal 裡面的 "View Cart" 連結
+    //Locate the "View Cart" link in the Modal.
     this.viewCartModalLink = page.locator('#cartModal a[href="/view_cart"]'); 
   }
 
@@ -54,18 +54,18 @@ export class ProductsPage extends BasePage {
   */
 
   async addFirstProductToCart() {
-    // 1. 找到第一個商品並移動滑鼠上去 (Trigger overlay)
+    // 1. Find the first item and move the mouse over it (Trigger overlay)
     const firstProduct = this.page.locator('.single-products').first();
     await firstProduct.hover();
 
-    // 2. 點擊「Add to cart」按鈕
+    // 2. Click the "Add to cart" button
     await firstProduct.locator('a.add-to-cart').first().click({ force: true });
 
-    // 3. 關鍵：等待 #cartModal 出現且可見！
+    // 3. Wait for #cartModal to appear and become visible!
     const cartModal = this.page.locator('#cartModal');
     await expect(cartModal).toBeVisible({ timeout: 10000 });
 
-    // 4. 等待裡面的 View Cart 連結變為可點擊狀態再點擊
+    // 4. Wait until the View Cart link becomes clickable before clicking it.
     const viewCartLink = cartModal.locator('a[href="/view_cart"]');
     await viewCartLink.waitFor({ state: 'visible' });
     await viewCartLink.click();
@@ -78,7 +78,7 @@ export class ProductsPage extends BasePage {
       await consentBtn.click();
     }
   } catch {
-    // 沒跳彈窗就順暢通過
+    //If no pop-up appears, skip silently.
   }
 }
 }

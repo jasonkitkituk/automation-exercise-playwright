@@ -34,11 +34,11 @@ export class SignupPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    // 選擇 Title (Mr.)
+    // Select Title (Mr.)
     this.titleMrRadio = page.locator('#id_gender1');
     this.passwordInput = page.locator('input[data-qa="password"]');
     
-    // 生日下拉選單
+    // Birthday dropdown menu
     this.daysSelect = page.locator('select[data-qa="days"]');
     this.monthsSelect = page.locator('select[data-qa="months"]');
     this.yearsSelect = page.locator('select[data-qa="years"]');
@@ -58,23 +58,23 @@ export class SignupPage extends BasePage {
   }
 
   async fillAccountDetails(details: AccountDetails) {
-    // 1. 勾選 Title (必填)
+    // 1. Check the box for Title (required).
     await this.titleMrRadio.check({ force: true });
 
-    // 2. 填寫密碼
+    // 2. Enter password
     await this.passwordInput.fill(details.password);
 
-    // 3. 選擇生日 (避免部分瀏覽器對 Date 的驗證)
+    // 3. Choose your birthday (to avoid some browsers' date verification requirements).
     await this.daysSelect.selectOption('10');
     await this.monthsSelect.selectOption('5');
     await this.yearsSelect.selectOption('1995');
 
-    // 4. 填寫地址與個人資料
+    // 4. Fill in address and personal information
     await this.firstNameInput.fill(details.firstName);
     await this.lastNameInput.fill(details.lastName);
     await this.addressInput.fill(details.address);
     
-    // 國家選單
+    // 5.Select Country
     if (details.country) {
       await this.countrySelect.selectOption(details.country);
     } else {
@@ -86,16 +86,16 @@ export class SignupPage extends BasePage {
     await this.zipcodeInput.fill(details.zipcode);
     await this.mobileInput.fill(details.mobile);
 
-    // 5. 滾動並送出
+    // 6. Scroll and send
     await this.createAccountBtn.scrollIntoViewIfNeeded();
     await this.createAccountBtn.click({ force: true });
   }
 
   async verifyAccountCreated() {
-    // 等待跳轉至 ACCOUNT CREATED! 頁面
+    // Waiting to be redirected to the "ACCOUNT CREATED" page.
     await expect(this.accountCreatedHeader).toBeVisible({ timeout: 20000 });
     
-    // 點擊 Continue
+    // Click Continue
     await this.continueBtn.click({ force: true });
   }
 }

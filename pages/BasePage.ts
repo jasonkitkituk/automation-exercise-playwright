@@ -11,25 +11,25 @@ export class BasePage {
   async navigateTo(path: string = '/') {
     
     await this.page.goto(path, { 
-      // 改用 'commit' 策略：伺服器一有回應就立刻繼續，不被慢速的廣告與 DOM 載入卡住
+      //Use'commit' strategy: continue immediately as soon as the server responds, avoiding being stuck by slow ads and DOM loading.
       waitUntil: 'commit',
       //waitUntil: 'domcontentloaded',
       timeout: 60000 
     });
 
-    // 手動等待 <body> 標籤出現，確保頁面基本元素已存在
+    //Manually wait for the `<body>` tag to appear to ensure that the basic page elements exist.
     await this.page.locator('body').waitFor({ state: 'attached', timeout: 30000 });
   }
 
   private async dismissConsentBanner() {
     try {
-      // 1. 嘗試點擊 "Consent" 同意按鈕
+      // Try clicking the "Consent" button to agree.
       const consentBtn = this.page.locator('.fc-consent-root button.fc-cta-consent');
       if (await consentBtn.isVisible({ timeout: 3000 })) {
         await consentBtn.click();
       }
     } catch {
-      // 2. 如果沒有按鈕或超時，直接強制從 DOM 移除整個彈窗 DOM 節點
+      //If there is no button or a timeout occurs, forcibly remove the entire popup DOM node from the DOM.
       await this.page.evaluate(() => {
         const consentRoot = document.querySelector('.fc-consent-root');
         if (consentRoot) consentRoot.remove();
@@ -39,13 +39,13 @@ export class BasePage {
 
   async handleConsentModal() {
     try {
-      // 尋找 GDPR Consent 彈窗的同意按鈕並點擊
+      //Find the "Agree" button in the GDPR Consent pop-up and click it.
       const consentBtn = this.page.locator('.fc-consent-root .fc-button-label, button:has-text("Consent"), button:has-text("AGREE")');
       if (await consentBtn.first().isVisible({ timeout: 3000 })) {
         await consentBtn.first().click();
       }
     } catch {
-      // 若無彈窗則靜默跳過
+      //If no pop-up appears, skip silently.
     }
   }
 }

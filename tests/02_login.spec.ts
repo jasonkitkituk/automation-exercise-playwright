@@ -27,33 +27,32 @@ test.describe('Journey 2: User Login', () => {
       mobile: '1234567890',
     };
 
-    // 1. 前往首頁並確保點擊 Header 的 Signup/Login 進入 /login 頁面
+    // 1. Go to the homepage and make sure to click on Signup/Login in the header to enter the /login page.
     await page.goto('/');
-    // 處理 GDPR 彈窗 (若有)
+    // Handling GDPR pop-ups (if any)
     const consentBtn = page.locator('button:has-text("Consent"), button:has-text("AGREE")');
     if (await consentBtn.isVisible({ timeout: 3000 }).catch(() => false)) {
       await consentBtn.click();
     }
 
-    // 穿透點擊
     await page.locator('a[href="/login"]').click({ force: true });
     await page.waitForURL('**/login');
 
-    // 2. 開始註冊 (填寫 Name & Email)
+    // 2. Start registering (enter Name & Email)
     await loginPage.startSignup(testUser.name, testUser.email);
 
-    // 3. 填寫詳細 Signup 表單
+    // 3. Fill out the detailed Signup form
     await signupPage.fillAccountDetails(testUser);
     await signupPage.verifyAccountCreated();
 
-    // 4. 註冊成功後，點擊 Logout 登出，回歸登入頁面準備測試「登入」
+    // 4. After successful registration, click "Logout" to exit and return to the login page to prepare for a "Login" test.
     await page.locator('a[href="/logout"]').click();
     await page.waitForURL('**/login');
 
-    // 5. 執行真正要測試的「登入」邏輯 (Login with correct credentials)
+    // 5. Testinf of Login with correct credentials
     await loginPage.login(testUser.email, testUser.password);
 
-    // 6. 驗證登入成功 (確認 Header 出現 Logged in as Test User)
+    // 6. Login verified successfully (confirm that the header shows "Logged in as Test User").
     await expect(page.locator(`text=Logged in as ${testUser.name}`)).toBeVisible();
   });
 });

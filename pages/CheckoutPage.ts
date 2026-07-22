@@ -30,17 +30,17 @@ export class CheckoutPage extends BasePage {
     this.successMessage = page.locator('[data-qa="order-placed"]');
   }
 
-// 使用精確的 text 或 class locator
+  // Use precise text or class locator
   private proceedToCheckoutBtn = this.page.locator('a.check_out, .check_out');
 
-// 1. 在 /view_cart 頁面使用的按鈕
+  // Buttons used on the /view_cart page
   async clickProceedToCheckout() {
     const btn = this.page.locator('a.check_out', { hasText: 'Proceed To Checkout' });
     await btn.waitFor({ state: 'visible', timeout: 10000 });
     await btn.click({ force: true });
   }
 
-  // 2. 在 /checkout 頁面使用的按鈕
+  // Buttons used on the /checkout page
   async clickPlaceOrder() {
     const btn = this.page.locator('a[href="/payment"]');
     await btn.waitFor({ state: 'visible', timeout: 10000 });

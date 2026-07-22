@@ -13,9 +13,9 @@ import { defineConfig, devices } from '@playwright/test';
  */
 export default defineConfig({
   testDir: './tests',
-  // 將單個測試的總執行時間限制放寬至 90 秒
+  // The total execution time limit for a single test has been relaxed to 90 seconds.
   timeout: 90000,
-  // 即使在本地端測試失敗，也自動重試 1 次
+  // Even if the test fails on the local machine, it will automatically retry once.
   retries: 1,
   use: {
     baseURL: 'https://automationexercise.com',
